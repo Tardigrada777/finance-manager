@@ -1,5 +1,5 @@
 import { writeFile, readFile } from 'fs/promises';
-import { Storage } from '../domain/ports/out/storage';
+import { Storage, StoredWallet } from '../domain/ports/out/storage';
 
 const DB_NAME = './test.txt';
 
@@ -17,10 +17,17 @@ export class FileStorageAdapter implements Storage {
       DB_NAME,
       `${db}
 [saveByWalletId]:
-${payload.datetime.toISOString()}: ${payload.type ? '+' : '-'}, ${
-        payload.amount
-      }\n`
+WalletID: ${id}, ${payload.datetime.toISOString()}: ${
+        payload.type ? '+' : '-'
+      }, ${payload.amount}\n`
     );
     return true;
+  }
+
+  async findWalletByName(walletName: string): Promise<StoredWallet> {
+    return {
+      id: '1',
+      name: 'WalletName',
+    };
   }
 }

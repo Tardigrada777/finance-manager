@@ -10,4 +10,4 @@
  * - 445 Taxi
  * ```
  */
-export const SAVE_TRANSACTION_QUERY = /[+,-]\s\d+\s\w+/gm;
+export const SAVE_TRANSACTION_QUERY = /[+,-]\s\d+\s([^\x00-\x7F]|\w)+/gm;

@@ -24,7 +24,7 @@ export class TelegramEventsProvider implements EventsProvider {
         type: sign === '+' ? 'income' : 'outcome',
         wallet,
       });
-      this._tg.sendMessage(chatId, 'Ok');
+      this._tg.sendMessage(chatId, 'Saved!');
     });
   }
 
