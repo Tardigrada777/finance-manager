@@ -1,0 +1,17 @@
+{
+  "name": "finance-hex-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^16.11.6",
+    "dotenv": "^10.0.0",
+    "google-spreadsheet": "^3.1.15",
+    "mitt": "^3.0.0",
+    "node-telegram-bot-api": "^0.54.0"
+  },
+  "devDependencies": {
+    "@types/google-spreadsheet": "^3.1.5",
+    "@types/node-telegram-bot-api": "^0.53.1"
+  }
+}
