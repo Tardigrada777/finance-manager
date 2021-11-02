@@ -1,8 +1,7 @@
-import { ID } from '../../types/common';
 import { TransactionType } from '../../types/transaction';
 
 export type SaveTransactionPayload = {
-  walletId: ID;
+  wallet: string;
   amount: number;
   type: TransactionType;
 };

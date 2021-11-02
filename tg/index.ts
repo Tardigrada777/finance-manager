@@ -2,6 +2,7 @@ import mitt from 'mitt';
 import TelegramBot from 'node-telegram-bot-api';
 import { EventsProvider } from '../domain/ports/in/events-provider';
 import { Events } from '../domain/ports/in/events';
+import { SAVE_TRANSACTION_QUERY } from './queries';
 
 export class TelegramEventsProvider implements EventsProvider {
   private readonly _emitter = mitt<Events>();
@@ -13,16 +14,17 @@ export class TelegramEventsProvider implements EventsProvider {
   }
 
   start() {
-    this._tg.onText(/\/echo (.+)/, (msg, match) => {
-      this._emitter.emit('save-transaction', {
-        amount: 1,
-        type: 'income',
-        walletId: '1',
-      });
+    this._tg.onText(SAVE_TRANSACTION_QUERY, (msg, match) => {
       const chatId = msg.chat.id;
-      const resp = match ? match[1] : '';
-      this._tg.sendMessage(chatId, resp);
-      console.log('[tg]: ', match);
+      const resp = match ? match[0] : '';
+      const [sign, amount, wallet] = resp.split(' ');
+      console.dir({ sign, amount, wallet });
+      this._emitter.emit('save-transaction', {
+        amount: Number(amount),
+        type: sign === '+' ? 'income' : 'outcome',
+        wallet,
+      });
+      this._tg.sendMessage(chatId, 'Ok');
     });
   }
 
