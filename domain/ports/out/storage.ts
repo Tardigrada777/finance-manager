@@ -15,5 +15,5 @@ export interface Storage {
     }
   ): Promise<boolean>;
 
-  findWalletByName(walletName: string): Promise<StoredWallet>;
+  findWalletByName(walletName: string): Promise<StoredWallet | null>;
 }

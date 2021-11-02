@@ -3,6 +3,11 @@ import { Storage, StoredWallet } from '../domain/ports/out/storage';
 
 const DB_NAME = './test.txt';
 
+const STORE: Record<string, string> = {
+  ['Продукты']: 'dsfh8sdf',
+  Taxi: 'jhfsdh80908ds9f',
+};
+
 export class FileStorageAdapter implements Storage {
   async saveByWalletId(
     id: string,
@@ -24,9 +29,10 @@ WalletID: ${id}, ${payload.datetime.toISOString()}: ${
     return true;
   }
 
-  async findWalletByName(walletName: string): Promise<StoredWallet> {
+  async findWalletByName(walletName: string): Promise<StoredWallet | null> {
+    if (!(walletName in STORE)) return null;
     return {
-      id: '1',
+      id: STORE[walletName],
       name: 'WalletName',
     };
   }
