@@ -1,11 +1,10 @@
 import mitt from 'mitt';
 import TelegramBot from 'node-telegram-bot-api';
 import { EventsProvider } from '../domain/ports/in/events-provider';
-
-// TODO: types for emitter
+import { Events } from '../domain/ports/in/events';
 
 export class TelegramEventsProvider implements EventsProvider {
-  private readonly _emitter = mitt();
+  private readonly _emitter = mitt<Events>();
   private _tg: TelegramBot;
 
   constructor(token: string) {
@@ -15,7 +14,11 @@ export class TelegramEventsProvider implements EventsProvider {
 
   start() {
     this._tg.onText(/\/echo (.+)/, (msg, match) => {
-      this._emitter.emit('save-transaction', msg);
+      this._emitter.emit('save-transaction', {
+        amount: 1,
+        type: 'income',
+        walletId: '1',
+      });
       const chatId = msg.chat.id;
       const resp = match ? match[1] : '';
       this._tg.sendMessage(chatId, resp);
