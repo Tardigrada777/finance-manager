@@ -1,8 +1,5 @@
-import { SaveTransactionPayload } from './events';
+import { SaveOutcomePayload } from './events';
 
 export interface EventsProvider {
-  on(
-    event: 'save-transaction',
-    cb: (payload: SaveTransactionPayload) => void
-  ): void;
+  on(event: 'save-outcome', cb: (payload: SaveOutcomePayload) => void): void;
 }

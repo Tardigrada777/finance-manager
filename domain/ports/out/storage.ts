@@ -6,14 +6,12 @@ export interface StoredWallet {
 }
 
 export interface Storage {
-  saveByWalletId(
-    id: string,
-    payload: {
-      amount: number;
-      type: 1 | 0;
-      datetime: Date;
-    }
+  saveOutcomeByWallet(
+    wallet: string,
+    payload: { amount: number }
   ): Promise<boolean>;
 
   findWalletByName(walletName: string): Promise<StoredWallet | null>;
+
+  getOutcomeOfDay(wallet: string, date: Date): Promise<number | null>;
 }

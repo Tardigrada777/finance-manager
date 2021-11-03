@@ -9,6 +9,13 @@ const STORE: Record<string, string> = {
 };
 
 export class FileStorageAdapter implements Storage {
+  saveOutcomeByWallet(
+    wallet: string,
+    payload: { amount: number }
+  ): Promise<boolean> {
+    throw new Error('Method not implemented.');
+  }
+
   async saveByWalletId(
     id: string,
     payload: {
@@ -35,5 +42,9 @@ WalletID: ${id}, ${payload.datetime.toISOString()}: ${
       id: STORE[walletName],
       name: 'WalletName',
     };
+  }
+
+  async getOutcomeOfDay() {
+    return 0;
   }
 }

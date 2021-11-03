@@ -19,16 +19,20 @@ export class TelegramEventsProvider implements EventsProvider {
       const resp = match ? match[0] : '';
       const [sign, amount, wallet] = resp.split(' ');
       console.dir({ sign, amount, wallet });
-      this._emitter.emit('save-transaction', {
-        amount: Number(amount),
-        type: sign === '+' ? 'income' : 'outcome',
-        wallet,
-      });
-      this._tg.sendMessage(chatId, 'Saved!');
+      if (sign === '-') {
+        this._emitter.emit('save-outcome', {
+          amount: Number(amount),
+          type: 'outcome',
+          wallet,
+        });
+        this._tg.sendMessage(chatId, '- 🪙');
+        return;
+      }
+      this._tg.sendMessage(chatId, 'This operation is not supported!');
     });
   }
 
-  on(event: 'save-transaction', cb: any) {
+  on(event: 'save-outcome', cb: any) {
     this._emitter.on(event, (data) => {
       cb(data);
     });

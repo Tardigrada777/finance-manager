@@ -5,6 +5,20 @@ import creds from './creds.json';
 
 const SECRET_KEY = config().parsed?.GOOGLE_SPREADSHEETS_API_KEY;
 
+/**
+ * A-------------
+ * |            |
+ * |   cells    |
+ * |            |
+ * -------------B
+ */
+enum OutcomeZone {
+  ARow = 0,
+  ACol = 6,
+  BRow = 8,
+  BCol = 10,
+}
+
 export class SpreadSheetsAdapter implements Storage {
   private readonly _doc: GoogleSpreadsheet;
 
@@ -20,25 +34,48 @@ export class SpreadSheetsAdapter implements Storage {
     });
   }
 
-  async saveByWalletId(
-    id: string,
+  async saveOutcomeByWallet(
+    wallet: string,
     payload: {
       amount: number;
-      type: 1 | 0;
-      datetime: Date;
     }
   ) {
     await this._doc.loadInfo();
-    console.log(this._doc.sheetCount);
-    const sheet = await this._doc.addSheet({
-      title: `Title: ${new Date().toISOString()}`,
+    const sheet = this._doc.sheetsByTitle[wallet];
+    if (!sheet) {
+      return false;
+    }
+    await sheet.loadCells({
+      startRowIndex: OutcomeZone.ARow,
+      startColumnIndex: OutcomeZone.ACol,
+      endRowIndex: OutcomeZone.BRow,
+      endColumnIndex: OutcomeZone.BCol,
     });
-    console.log('sheet', sheet);
-    console.log(
-      `${payload.datetime.toISOString()}: ${payload.type ? '+' : '-'}${
-        payload.amount
-      }`
-    );
+    const today = new Date().getDay();
+    const targetCell = sheet.getCell(today, OutcomeZone.ACol + 2);
+    targetCell.value = payload.amount;
+    await sheet.saveUpdatedCells();
     return true;
+  }
+
+  async getOutcomeOfDay(wallet: string, date: Date) {
+    await this._doc.loadInfo();
+    const sheet = this._doc.sheetsByTitle[wallet];
+    if (!sheet) {
+      return null;
+    }
+    await sheet.loadCells({
+      startRowIndex: OutcomeZone.ARow,
+      startColumnIndex: OutcomeZone.ACol,
+      endRowIndex: OutcomeZone.BRow,
+      endColumnIndex: OutcomeZone.BCol,
+    });
+    const today = new Date(date).getDay();
+    const targetCell = sheet.getCell(today, OutcomeZone.ACol + 2);
+    return targetCell.value !== null ? Number(targetCell.value) : 0;
+  }
+
+  async findWalletByName(name: string) {
+    return { id: '1', name };
   }
 }

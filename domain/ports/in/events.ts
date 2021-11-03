@@ -1,11 +1,11 @@
 import { TransactionType } from '../../types/transaction';
 
-export type SaveTransactionPayload = {
+export type SaveOutcomePayload = {
   wallet: string;
   amount: number;
   type: TransactionType;
 };
 
 export type Events = {
-  'save-transaction': SaveTransactionPayload;
+  'save-outcome': SaveOutcomePayload;
 };
