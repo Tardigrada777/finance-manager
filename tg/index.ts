@@ -18,7 +18,6 @@ export class TelegramEventsProvider implements EventsProvider {
       const chatId = msg.chat.id;
       const resp = match ? match[0] : '';
       const [sign, amount, wallet] = resp.split(' ');
-      console.dir({ sign, amount, wallet });
       if (sign === '-') {
         this._emitter.emit('save-outcome', {
           amount: Number(amount),
