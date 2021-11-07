@@ -1,10 +1,11 @@
-import { config } from 'dotenv';
+import { getEnvOrThrow } from './infra/env-utils';
 import { EventsProvider } from './domain/ports/in/events-provider';
 import { Storage } from './domain/ports/out/storage';
 import { SpreadSheetsAdapter } from './spread-sheets';
-import { SaveOutcomeUseCase } from './domain/ports/in/use-cases/save-outcome';
-import { UseCase } from './domain/ports/in/use-cases/use-case';
+import { SaveOutcomeUseCase } from './domain/use-cases/save-outcome';
+import { UseCase } from './domain/use-cases/use-case';
 import { TelegramEventsProvider } from './tg';
+import { ArchivateWeekDataUseCase } from './domain/use-cases/archivate-week-data';
 
 class App {
   _events: EventsProvider;
@@ -29,17 +30,15 @@ class App {
   }
 }
 
-const SPREADSHEET_ID = config().parsed?.SPREADSHEET_ID;
-const TG_TOKEN = config().parsed?.TG_TOKEN;
+const SPREADSHEET_ID = getEnvOrThrow('SPREADSHEET_ID');
+const TG_TOKEN = getEnvOrThrow('TG_TOKEN');
 
-const spreadsheetAdapter = new SpreadSheetsAdapter(SPREADSHEET_ID || '');
-
+const spreadsheetAdapter = new SpreadSheetsAdapter(SPREADSHEET_ID);
 spreadsheetAdapter.init().then(() => {
   const app = new App({
-    in: new TelegramEventsProvider(TG_TOKEN || ''),
+    in: new TelegramEventsProvider(TG_TOKEN),
     out: spreadsheetAdapter,
-    // out: new FileStorageAdapter(),
-    useCases: [SaveOutcomeUseCase],
+    useCases: [SaveOutcomeUseCase, ArchivateWeekDataUseCase],
   });
   app.run();
 });

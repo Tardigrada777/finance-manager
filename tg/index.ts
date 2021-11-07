@@ -2,7 +2,9 @@ import mitt from 'mitt';
 import TelegramBot from 'node-telegram-bot-api';
 import { EventsProvider } from '../domain/ports/in/events-provider';
 import { Events } from '../domain/ports/in/events';
-import { SAVE_TRANSACTION_QUERY } from './queries';
+import { ARCHIVATE_QUERY, SAVE_TRANSACTION_QUERY } from './queries';
+
+type SubscribedEvents = 'save-outcome' | 'archivate-week-data';
 
 export class TelegramEventsProvider implements EventsProvider {
   private readonly _emitter = mitt<Events>();
@@ -29,9 +31,15 @@ export class TelegramEventsProvider implements EventsProvider {
       }
       this._tg.sendMessage(chatId, 'This operation is not supported!');
     });
+
+    this._tg.onText(ARCHIVATE_QUERY, (msg) => {
+      const chatId = msg.chat.id;
+      this._emitter.emit('archivate-week-data', {});
+      this._tg.sendMessage(chatId, 'Week sucessfully saved!');
+    });
   }
 
-  on(event: 'save-outcome', cb: any) {
+  on(event: SubscribedEvents, cb: any) {
     this._emitter.on(event, (data) => {
       cb(data);
     });

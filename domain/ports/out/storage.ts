@@ -11,7 +11,9 @@ export interface Storage {
     payload: { amount: number }
   ): Promise<boolean>;
 
-  findWalletByName(walletName: string): Promise<StoredWallet | null>;
-
   getOutcomeOfDay(wallet: string, date: Date): Promise<number | null>;
+
+  makeArchive(): Promise<boolean>;
+
+  clearWalletsData(): Promise<boolean>;
 }

@@ -1,5 +1,5 @@
-import { EventsProvider } from '../events-provider';
-import { Storage } from '../../out/storage';
+import { EventsProvider } from '../ports/in/events-provider';
+import { Storage } from '../ports/out/storage';
 
 export class UseCase {
   constructor(

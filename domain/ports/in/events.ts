@@ -6,6 +6,9 @@ export type SaveOutcomePayload = {
   type: TransactionType;
 };
 
+export type ArchivateWeekDataPayload = {};
+
 export type Events = {
   'save-outcome': SaveOutcomePayload;
+  'archivate-week-data': ArchivateWeekDataPayload;
 };
